@@ -75,17 +75,38 @@
         
     }
     
+    //插入數據
+//    NSArray *newItemNames = [NSArray arrayWithObjects:@"Apples",@"Bread",@"Cheese",
+//                             @"Sausages",@"Butter", @"Orange Juice",@"Cereal",@"Coffee",
+//                             @"Eggs",@"Tomatoes",nil];
+//    
+//    for (NSString *newItemName in newItemNames) {
+//        
+//        Item *item = [NSEntityDescription insertNewObjectForEntityForName:@"Item" inManagedObjectContext:_coreDataHelper.context];
+//        item.name = newItemName;
+//        NSLog(@"Inserted New Managed Object for %@",item.name);
+//    }
+    //获取请求模板
+    NSFetchRequest *request = [[self.coreDataHelper.model fetchRequestTemplateForName:@"Test"] copy];
+    //获取数据
+//    NSFetchRequest *request  =[NSFetchRequest fetchRequestWithEntityName:@"Item"];
+    //数据排序
+    NSSortDescriptor *sort  =[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    [request setSortDescriptors:@[sort]];
     
-    NSArray *newItemNames = [NSArray arrayWithObjects:@"Apples",@"Bread",@"Cheese",
-                             @"Sausages",@"Butter", @"Orange Juice",@"Cereal",@"Coffee",
-                             @"Eggs",@"Tomatoes",nil];
+    //数据筛选
+//    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"name != %@",@"Coffee"];
+//    [request setPredicate:predicate];
     
-    for (NSString *newItemName in newItemNames) {
+    NSArray *fetchObjects = [_coreDataHelper.context executeFetchRequest:request error:nil];
+    for (Item *item in fetchObjects) {
         
-        Item *item = [NSEntityDescription insertNewObjectForEntityForName:@"Item" inManagedObjectContext:_coreDataHelper.context];
-        item.name = newItemName;
-        NSLog(@"Inserted New Managed Object for %@",item.name);
+        NSLog(@"Fetch Obejct  = %@",item.name);
+        //删除托管对象
+        [self.coreDataHelper.context deleteObject:item];
     }
+    
+    
 }
 - (void)applicationWillTerminate:(UIApplication *)application
 {
